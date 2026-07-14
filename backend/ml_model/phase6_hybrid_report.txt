@@ -1,0 +1,124 @@
+PHASE 6 — HYBRID VALIDATION
+================================================================================
+
+Frozen external examples: 330
+Hybrid confidence threshold: 0.40
+
+SUMMARY
+--------------------------------------------------------------------------------
+  approach  accuracy  macro_f1  weighted_f1
+   ML only  0.500000  0.446697     0.497441
+Rules only  0.157576  0.191015     0.184353
+    Hybrid  0.533333  0.468610     0.531269
+
+================================================================================
+ML ONLY
+================================================================================
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements     0.3529    0.4000    0.3750        15
+     Assignment / Subletting     0.9091    0.7692    0.8333        13
+             Confidentiality     0.0000    0.0000    0.0000         1
+          Dispute Resolution     0.7500    0.3750    0.5000         8
+          General Obligation     0.3750    0.1304    0.1935        23
+                   Insurance     0.8571    0.6316    0.7273        19
+                 Lease Grant     0.1429    0.8000    0.2424         5
+       Liability / Indemnity     0.6000    0.5000    0.5455        12
+                      Notice     0.8889    0.2424    0.3810        33
+             Other / Unknown     0.2353    0.5714    0.3333        14
+              Payment / Rent     0.6667    0.2632    0.3774        38
+      Possession / Surrender     0.8750    0.5833    0.7000        12
+         Property / Premises     0.2308    1.0000    0.3750         3
+             Quiet Enjoyment     0.1333    0.6667    0.2222         3
+       Repairs / Maintenance     0.6579    0.8621    0.7463        29
+       Signature / Execution     0.0000    0.0000    0.0000         8
+           Taxes / Utilities     0.5714    0.7273    0.6400        11
+            Term and Renewal     0.4211    0.4706    0.4444        17
+       Termination / Default     0.5682    0.7143    0.6329        35
+             Use of Premises     0.5652    0.5909    0.5778        22
+Warranties / Representations     0.6667    0.4444    0.5333         9
+
+                    accuracy                         0.5000       330
+                   macro avg     0.4984    0.5116    0.4467       330
+                weighted avg     0.5950    0.5000    0.4974       330
+
+
+================================================================================
+RULES ONLY
+================================================================================
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements     0.6667    0.1333    0.2222        15
+     Assignment / Subletting     1.0000    0.3846    0.5556        13
+             Confidentiality     0.0000    0.0000    0.0000         1
+          Dispute Resolution     0.0000    0.0000    0.0000         8
+          General Obligation     0.0000    0.0000    0.0000        23
+                   Insurance     0.8000    0.2105    0.3333        19
+                 Lease Grant     1.0000    0.2000    0.3333         5
+       Liability / Indemnity     1.0000    0.1667    0.2857        12
+                      Notice     0.0000    0.0000    0.0000        33
+             Other / Unknown     0.0505    1.0000    0.0962        14
+              Payment / Rent     0.8889    0.2105    0.3404        38
+      Possession / Surrender     0.7500    0.2500    0.3750        12
+         Property / Premises     0.0000    0.0000    0.0000         3
+             Quiet Enjoyment     0.6667    0.6667    0.6667         3
+       Repairs / Maintenance     1.0000    0.0345    0.0667        29
+       Signature / Execution     0.0000    0.0000    0.0000         8
+           Taxes / Utilities     1.0000    0.0909    0.1667        11
+            Term and Renewal     0.4286    0.1765    0.2500        17
+       Termination / Default     0.6250    0.1429    0.2326        35
+             Use of Premises     1.0000    0.0455    0.0870        22
+Warranties / Representations     0.0000    0.0000    0.0000         9
+
+                    accuracy                         0.1576       330
+                   macro avg     0.5179    0.1768    0.1910       330
+                weighted avg     0.5814    0.1576    0.1844       330
+
+
+================================================================================
+HYBRID
+================================================================================
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements     0.3750    0.4000    0.3871        15
+     Assignment / Subletting     0.9167    0.8462    0.8800        13
+             Confidentiality     0.0000    0.0000    0.0000         1
+          Dispute Resolution     0.6000    0.3750    0.4615         8
+          General Obligation     0.4286    0.1304    0.2000        23
+                   Insurance     0.8571    0.6316    0.7273        19
+                 Lease Grant     0.1818    0.8000    0.2963         5
+       Liability / Indemnity     0.6000    0.5000    0.5455        12
+                      Notice     0.8889    0.2424    0.3810        33
+             Other / Unknown     0.2424    0.5714    0.3404        14
+              Payment / Rent     0.7391    0.4474    0.5574        38
+      Possession / Surrender     0.7778    0.5833    0.6667        12
+         Property / Premises     0.2727    1.0000    0.4286         3
+             Quiet Enjoyment     0.1333    0.6667    0.2222         3
+       Repairs / Maintenance     0.6944    0.8621    0.7692        29
+       Signature / Execution     0.0000    0.0000    0.0000         8
+           Taxes / Utilities     0.5714    0.7273    0.6400        11
+            Term and Renewal     0.5000    0.6471    0.5641        17
+       Termination / Default     0.5952    0.7143    0.6494        35
+             Use of Premises     0.5909    0.5909    0.5909        22
+Warranties / Representations     0.6667    0.4444    0.5333         9
+
+                    accuracy                         0.5333       330
+                   macro avg     0.5063    0.5324    0.4686       330
+                weighted avg     0.6143    0.5333    0.5313       330
+
+
+================================================================================
+BEST APPROACH
+================================================================================
+Approach: Hybrid
+Accuracy: 0.5333
+Macro F1: 0.4686
+Weighted F1: 0.5313
+
+Hybrid predictions using rules: 42
+Hybrid predictions using ML: 288
+
+Files generated:
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_results.csv
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_predictions.csv
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_report.txt

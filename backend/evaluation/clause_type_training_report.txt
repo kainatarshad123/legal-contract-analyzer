@@ -1,0 +1,242 @@
+================================================================================
+VALIDATION RESULTS
+================================================================================
+Examples: 752
+Accuracy: 0.9322
+
+Classification report:
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements     1.0000    1.0000    1.0000         1
+     Assignment / Subletting     0.9649    0.9167    0.9402        60
+             Confidentiality     0.9688    1.0000    0.9841        62
+          Dispute Resolution     0.9508    0.9667    0.9587        60
+          General Obligation     0.8448    0.9074    0.8750        54
+               Governing Law     0.9492    0.9333    0.9412        60
+                   Insurance     0.9437    0.9853    0.9640        68
+                 Lease Grant     0.5000    1.0000    0.6667         1
+       Liability / Indemnity     0.9286    0.9123    0.9204        57
+                      Notice     1.0000    0.8438    0.9153        64
+             Other / Unknown     0.0000    0.0000    0.0000         1
+              Payment / Rent     0.8831    0.9315    0.9067        73
+      Possession / Surrender     0.0000    0.0000    0.0000         0
+         Property / Premises     0.0000    0.0000    0.0000         1
+             Quiet Enjoyment     1.0000    1.0000    1.0000         1
+       Repairs / Maintenance     0.6667    0.6667    0.6667         3
+       Signature / Execution     1.0000    1.0000    1.0000        52
+           Taxes / Utilities     1.0000    1.0000    1.0000         1
+            Term and Renewal     1.0000    1.0000    1.0000         1
+       Termination / Default     0.8816    0.9178    0.8993        73
+             Use of Premises     0.0000    0.0000    0.0000         0
+Warranties / Representations     0.9818    0.9153    0.9474        59
+
+                    accuracy                         0.9322       752
+                   macro avg     0.7484    0.7680    0.7539       752
+                weighted avg     0.9361    0.9322    0.9331       752
+
+
+Confusion matrix:
+                                     predicted:Alterations / Improvements  predicted:Assignment / Subletting  predicted:Confidentiality  predicted:Dispute Resolution  predicted:General Obligation  predicted:Governing Law  predicted:Insurance  predicted:Lease Grant  predicted:Liability / Indemnity  predicted:Notice  predicted:Other / Unknown  predicted:Payment / Rent  predicted:Property / Premises  predicted:Quiet Enjoyment  predicted:Repairs / Maintenance  predicted:Signature / Execution  predicted:Taxes / Utilities  predicted:Term and Renewal  predicted:Termination / Default  predicted:Warranties / Representations
+actual:Alterations / Improvements                                       1                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Assignment / Subletting                                          0                                 55                          1                             0                             2                        0                    0                      0                                0                 0                          0                         1                              0                          0                                0                                0                            0                           0                                1                                       0
+actual:Confidentiality                                                  0                                  0                         62                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Dispute Resolution                                               0                                  0                          0                            58                             0                        2                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:General Obligation                                               0                                  0                          1                             1                            49                        1                    0                      0                                1                 0                          0                         0                              0                          0                                0                                0                            0                           0                                1                                       0
+actual:Governing Law                                                    0                                  0                          0                             2                             1                       56                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                1                                       0
+actual:Insurance                                                        0                                  0                          0                             0                             1                        0                   67                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Lease Grant                                                      0                                  0                          0                             0                             0                        0                    0                      1                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Liability / Indemnity                                            0                                  0                          0                             0                             0                        0                    1                      0                               52                 0                          0                         3                              0                          0                                0                                0                            0                           0                                0                                       1
+actual:Notice                                                           0                                  1                          0                             0                             1                        0                    2                      0                                0                54                          0                         2                              0                          0                                0                                0                            0                           0                                4                                       0
+actual:Other / Unknown                                                  0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                1                                0                            0                           0                                0                                       0
+actual:Payment / Rent                                                   0                                  0                          0                             0                             1                        0                    1                      0                                2                 0                          0                        68                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Property / Premises                                              0                                  0                          0                             0                             0                        0                    0                      1                                0                 0                          0                         0                              0                          0                                0                                0                            0                           0                                0                                       0
+actual:Quiet Enjoyment                                                  0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          1                                0                                0                            0                           0                                0                                       0
+actual:Repairs / Maintenance                                            0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         1                              0                          0                                2                                0                            0                           0                                0                                       0
+actual:Signature / Execution                                            0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                0                               52                            0                           0                                0                                       0
+actual:Taxes / Utilities                                                0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            1                           0                                0                                       0
+actual:Term and Renewal                                                 0                                  0                          0                             0                             0                        0                    0                      0                                0                 0                          0                         0                              0                          0                                0                                0                            0                           1                                0                                       0
+actual:Termination / Default                                            0                                  0                          0                             0                             3                        0                    0                      0                                1                 0                          0                         1                              0                          0                                0                                0                            0                           0                               67                                       0
+actual:Warranties / Representations                                     0                                  1                          0                             0                             0                        0                    0                      0                                0                 0                          0                         1                              1                          0                                0                                0                            0                           0                                2                                      54
+
+================================================================================
+TEST RESULTS
+================================================================================
+Examples: 701
+Accuracy: 0.9372
+
+Classification report:
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements     0.3333    1.0000    0.5000         1
+     Assignment / Subletting     1.0000    0.9841    0.9920        63
+             Confidentiality     0.9524    1.0000    0.9756        60
+          Dispute Resolution     0.8333    1.0000    0.9091        45
+          General Obligation     0.8806    0.9672    0.9219        61
+               Governing Law     1.0000    0.8767    0.9343        73
+                   Insurance     1.0000    0.9792    0.9895        48
+       Liability / Indemnity     0.9138    0.9636    0.9381        55
+                      Notice     1.0000    0.8772    0.9346        57
+             Other / Unknown     0.0000    0.0000    0.0000         1
+              Payment / Rent     0.8679    0.8846    0.8762        52
+      Possession / Surrender     0.5000    1.0000    0.6667         1
+         Property / Premises     0.0000    0.0000    0.0000         0
+             Quiet Enjoyment     0.2500    1.0000    0.4000         1
+       Repairs / Maintenance     0.6667    0.6667    0.6667         3
+       Signature / Execution     1.0000    0.9649    0.9821        57
+           Taxes / Utilities     1.0000    1.0000    1.0000         1
+            Term and Renewal     1.0000    1.0000    1.0000         1
+       Termination / Default     0.9574    0.9000    0.9278        50
+             Use of Premises     1.0000    1.0000    1.0000         1
+Warranties / Representations     0.9692    0.9000    0.9333        70
+
+                    accuracy                         0.9372       701
+                   macro avg     0.7678    0.8554    0.7880       701
+                weighted avg     0.9466    0.9372    0.9395       701
+
+
+Confusion matrix:
+                                     predicted:Alterations / Improvements  predicted:Assignment / Subletting  predicted:Confidentiality  predicted:Dispute Resolution  predicted:General Obligation  predicted:Governing Law  predicted:Insurance  predicted:Liability / Indemnity  predicted:Notice  predicted:Other / Unknown  predicted:Payment / Rent  predicted:Possession / Surrender  predicted:Quiet Enjoyment  predicted:Repairs / Maintenance  predicted:Signature / Execution  predicted:Taxes / Utilities  predicted:Term and Renewal  predicted:Termination / Default  predicted:Use of Premises  predicted:Warranties / Representations
+actual:Alterations / Improvements                                       1                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Assignment / Subletting                                          0                                 62                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          0                                       1
+actual:Confidentiality                                                  0                                  0                         60                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Dispute Resolution                                               0                                  0                          0                            45                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:General Obligation                                               0                                  0                          0                             0                            59                        0                    0                                0                 0                          0                         2                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Governing Law                                                    0                                  0                          0                             8                             1                       64                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Insurance                                                        0                                  0                          0                             0                             0                        0                   47                                0                 0                          0                         0                                 0                          0                                1                                0                            0                           0                                0                          0                                       0
+actual:Liability / Indemnity                                            1                                  0                          0                             0                             0                        0                    0                               53                 0                          0                         1                                 0                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Notice                                                           1                                  0                          0                             0                             1                        0                    0                                0                50                          0                         3                                 0                          0                                0                                0                            0                           0                                1                          0                                       1
+actual:Other / Unknown                                                  0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          1                                0                                0                            0                           0                                0                          0                                       0
+actual:Payment / Rent                                                   0                                  0                          0                             1                             0                        0                    0                                3                 0                          0                        46                                 0                          1                                0                                0                            0                           0                                0                          0                                       0
+actual:Possession / Surrender                                           0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 1                          0                                0                                0                            0                           0                                0                          0                                       0
+actual:Quiet Enjoyment                                                  0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          1                                0                                0                            0                           0                                0                          0                                       0
+actual:Repairs / Maintenance                                            0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 1                          0                                2                                0                            0                           0                                0                          0                                       0
+actual:Signature / Execution                                            0                                  0                          0                             0                             1                        0                    0                                0                 0                          0                         0                                 0                          1                                0                               55                            0                           0                                0                          0                                       0
+actual:Taxes / Utilities                                                0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            1                           0                                0                          0                                       0
+actual:Term and Renewal                                                 0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           1                                0                          0                                       0
+actual:Termination / Default                                            0                                  0                          0                             0                             3                        0                    0                                1                 0                          0                         1                                 0                          0                                0                                0                            0                           0                               45                          0                                       0
+actual:Use of Premises                                                  0                                  0                          0                             0                             0                        0                    0                                0                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                0                          1                                       0
+actual:Warranties / Representations                                     0                                  0                          3                             0                             2                        0                    0                                1                 0                          0                         0                                 0                          0                                0                                0                            0                           0                                1                          0                                      63
+
+================================================================================
+LOW-CONFIDENCE TEST EXAMPLES
+================================================================================
+
+Actual: Notice
+Predicted: Notice
+Confidence: 0.0849
+Text: Each Party will promptly notify the other in writing if it becomes aware of: (a) any infringement or misappropriation, or suspected or threatened infringement or misappropriation, of the Licensed Technology or Licensed Intellectual Property Rights by any Third Party, or (b) any Claim by any Third Party that commercialization of the Licensed Products or other use of any of the Licensed Technology or Licensed Intellectual Property Rights in accordance with this Agreement, misappropriates or infrin
+--------------------------------------------------------------------------------
+
+Actual: Notice
+Predicted: Warranties / Representations
+Confidence: 0.0928
+Text: You have up to twenty-one (21) days to consider this Agreement before deciding whether to sign it. In connection with your consideration of this Agreement, Adient US LLC hereby advises you to consult with an attorney prior to signing this Agreement.
+--------------------------------------------------------------------------------
+
+Actual: Notice
+Predicted: Alterations / Improvements
+Confidence: 0.0983
+Text: The Borrower shall immediately notify Administrative Agent in writing of: (i) the discovery of any Hazardous Materials on, under or about the Property and Improvements; (ii) any knowledge by Borrower that the Property and Improvements do not comply with any Hazardous Materials Laws; (iii) any Hazardous Materials Claims.
+--------------------------------------------------------------------------------
+
+Actual: Warranties / Representations
+Predicted: General Obligation
+Confidence: 0.1125
+Text: It has been represented by counsel in connection with this Agreement and the transactions contemplated by this Agreement and the Term Sheet, and has had the contents hereof fully explained by such counsel and is fully aware of such contents and legal effect.
+--------------------------------------------------------------------------------
+
+Actual: Warranties / Representations
+Predicted: Termination / Default
+Confidence: 0.1155
+Text: Executive hereby acknowledges that he understands this Agreement and enters into this Agreement voluntarily.
+--------------------------------------------------------------------------------
+
+Actual: Liability / Indemnity
+Predicted: Liability / Indemnity
+Confidence: 0.1172
+Text: For purposes of clarity and not by way of limitation, Borrower and Lender acknowledge and agree that this Consent Letter is one of the Loan Documents and that the indemnification provided pursuant to Section 12.2 of the Loan Agreement applies hereto.
+--------------------------------------------------------------------------------
+
+Actual: Dispute Resolution
+Predicted: Dispute Resolution
+Confidence: 0.1179
+Text: Jury; Headings; Severability; Preferences; Prior Agreements . The provisions of Sections 14.4, 14.6, 14.8, 14.9, 14.10 and 14.13 of the Loan Agreement are hereby incorporated into this amendment, mutatis mutandis .
+--------------------------------------------------------------------------------
+
+Actual: Notice
+Predicted: General Obligation
+Confidence: 0.1204
+Text: The Company shall provide each Holder of Preferred Shares with prompt written notice of all actions taken pursuant to the terms of this Certificate of Designation, including in reasonable detail a description of such action and the reason therefor.
+--------------------------------------------------------------------------------
+
+Actual: Repairs / Maintenance
+Predicted: Possession / Surrender
+Confidence: 0.1226
+Text: notice for inspection, repair, or showing, except in an emergency.
+--------------------------------------------------------------------------------
+
+Actual: Warranties / Representations
+Predicted: Warranties / Representations
+Confidence: 0.1236
+Text: The Executive represents and warrants that (a) the Executive has been properly paid for all hours worked and has received all wages, bonuses, vacation pay, expense reimbursements and any other sums due from the Company (with the exception of the payments and benefits to be provided pursuant to Section 7(b) of the Employment Agreement); (b) the Executive has returned all Company property in the Executive’s possession or control and has permanently deleted any Confidential Information stored on an
+--------------------------------------------------------------------------------
+
+Actual: Termination / Default
+Predicted: Termination / Default
+Confidence: 0.1306
+Text: notice and the applicable cure period, the Landlord may pursue remedies permitted by law.
+--------------------------------------------------------------------------------
+
+Actual: Termination / Default
+Predicted: Termination / Default
+Confidence: 0.1381
+Text: For purposes of the Plan, Termination means a Participant ceasing to be a member of the Board for any reason, including resignation, removal, or failure to be re-elected. A Participant who ceases to be an Outside Director, but is still a member of the Board, shall not have incurred a Termination. Notwithstanding the foregoing, for purposes of determining when a Participant’s Account becomes payable, Termination shall not be considered to have occurred until the Participant incurs a separation fr
+--------------------------------------------------------------------------------
+
+Actual: Signature / Execution
+Predicted: Quiet Enjoyment
+Confidence: 0.1390
+Text: 16. Signatures The Landlord and Tenant sign below to confirm acceptance of this
+--------------------------------------------------------------------------------
+
+Actual: Assignment / Subletting
+Predicted: Assignment / Subletting
+Confidence: 0.1397
+Text: (as defined in General Instruction A.1(a)(5) to Registration Statement on Form S-8 under the Securities Act of 1933, as amended) of the Grantee; provided that the Grantee receives no consideration for such transfer and the transferred Option continues to be subject to the same terms and conditions as were applicable to the Option immediately prior to such transfer; and provided , further , that any such transfer shall be effectuated only by a written instrument acceptable to the Committee that i
+--------------------------------------------------------------------------------
+
+Actual: Governing Law
+Predicted: Governing Law
+Confidence: 0.1409
+Text: The laws of the Commonwealth of Virginia shall govern the STIP.
+--------------------------------------------------------------------------------
+
+Actual: Payment / Rent
+Predicted: Quiet Enjoyment
+Confidence: 0.1471
+Text: Rent Agreement is made between Ahmed Khan, Landlord, and Sara Malik, Tenant, for Apartment 8B at 44 Garden Road.
+--------------------------------------------------------------------------------
+
+Actual: Assignment / Subletting
+Predicted: Warranties / Representations
+Confidence: 0.1501
+Text: Except as stated in Section 5.4, this Agreement may not be assigned by the Asset Representations Reviewer without the consent of the Issuer and the Servicer.
+--------------------------------------------------------------------------------
+
+Actual: Payment / Rent
+Predicted: Payment / Rent
+Confidence: 0.1501
+Text: Participants shall be required to pay, to the extent required by applicable law, any amounts required to receive shares of Common Stock under any Award made under the Plan.
+--------------------------------------------------------------------------------
+
+Actual: Warranties / Representations
+Predicted: Warranties / Representations
+Confidence: 0.1516
+Text: The execution, delivery and performance of this Agreement by you will not conflict with or result in a violation of any agreement to which you are a party or any law, regulation or court order applicable to you.
+--------------------------------------------------------------------------------
+
+Actual: Warranties / Representations
+Predicted: Warranties / Representations
+Confidence: 0.1571
+Text: Executive represents that: (i) she understands she is waiving the various claims she could have asserted against Cimpress in connection with her employment with Cimpress and the termination of her employment with Cimpress, including, without limitation, under the ADEA and the other laws specified in Section 6 above; (ii) she has read this Agreement, including the release set forth in Section 6 above, carefully and understands all of its provisions; (iii) she understands that rights or claims und
+--------------------------------------------------------------------------------

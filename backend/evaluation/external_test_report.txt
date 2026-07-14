@@ -1,0 +1,83 @@
+EXTERNAL CLAUSE-TYPE EVALUATION
+==================================================
+Total labeled clauses: 330
+Correct predictions: 165
+Incorrect predictions: 165
+Accuracy: 0.5000
+Macro F1: 0.4467
+Weighted F1: 0.4974
+Average ML confidence: 0.3119
+
+CLASSIFICATION REPORT
+==================================================
+                              precision    recall  f1-score   support
+
+  Alterations / Improvements       0.35      0.40      0.38        15
+     Assignment / Subletting       0.91      0.77      0.83        13
+             Confidentiality       0.00      0.00      0.00         1
+          Dispute Resolution       0.75      0.38      0.50         8
+          General Obligation       0.38      0.13      0.19        23
+                   Insurance       0.86      0.63      0.73        19
+                 Lease Grant       0.14      0.80      0.24         5
+       Liability / Indemnity       0.60      0.50      0.55        12
+                      Notice       0.89      0.24      0.38        33
+             Other / Unknown       0.24      0.57      0.33        14
+              Payment / Rent       0.67      0.26      0.38        38
+      Possession / Surrender       0.88      0.58      0.70        12
+         Property / Premises       0.23      1.00      0.38         3
+             Quiet Enjoyment       0.13      0.67      0.22         3
+       Repairs / Maintenance       0.66      0.86      0.75        29
+       Signature / Execution       0.00      0.00      0.00         8
+           Taxes / Utilities       0.57      0.73      0.64        11
+            Term and Renewal       0.42      0.47      0.44        17
+       Termination / Default       0.57      0.71      0.63        35
+             Use of Premises       0.57      0.59      0.58        22
+Warranties / Representations       0.67      0.44      0.53         9
+
+                    accuracy                           0.50       330
+                   macro avg       0.50      0.51      0.45       330
+                weighted avg       0.59      0.50      0.50       330
+
+
+PERFORMANCE BY SOURCE
+==================================================
+
+evaluation_pdfscommercial_lease_test_01.pdf
+Clauses: 40
+Correct: 20
+Incorrect: 20
+Accuracy: 0.5000
+Macro F1: 0.3981
+Average confidence: 0.3556
+
+evaluation_pdfscommercial_lease_test_02.pdf
+Clauses: 31
+Correct: 16
+Incorrect: 15
+Accuracy: 0.5161
+Macro F1: 0.4462
+Average confidence: 0.3254
+
+evaluation_pdfsformal_lease_test_01.pdf
+Clauses: 103
+Correct: 56
+Incorrect: 47
+Accuracy: 0.5437
+Macro F1: 0.4732
+Average confidence: 0.3457
+
+evaluation_pdfsmodern_lease_test_01.pdf
+Clauses: 104
+Correct: 48
+Incorrect: 56
+Accuracy: 0.4615
+Macro F1: 0.3754
+Average confidence: 0.2551
+
+evaluation_pdfsold_lease_deed_01.pdf
+Clauses: 52
+Correct: 25
+Incorrect: 27
+Accuracy: 0.4808
+Macro F1: 0.3895
+Average confidence: 0.3166

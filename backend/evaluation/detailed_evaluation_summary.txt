@@ -1,0 +1,22 @@
+DETAILED 22-CLASS EVALUATION
+================================================================================
+
+Frozen evaluation clauses: 330
+Class count: 22
+
+SUMMARY
+--------------------------------------------------------------------------------
+                approach  accuracy  macro_f1  weighted_f1  evaluation_clauses  ml_predictions  rule_predictions
+Character TF-IDF ML only  0.500000  0.446697     0.497441                 330             330                 0
+ Final hybrid ML + rules  0.533333  0.468610     0.531269                 330             288                42
+
+FILES GENERATED
+--------------------------------------------------------------------------------
+character_model_classification_report.csv
+character_model_confusion_matrix.csv
+character_model_confusion_matrix.png
+final_hybrid_classification_report.csv
+final_hybrid_confusion_matrix.csv
+final_hybrid_confusion_matrix.png
+detailed_evaluation_predictions.csv
+detailed_evaluation_summary.csv

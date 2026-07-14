@@ -1,0 +1,17 @@
+PHASE-5 PROVISIONAL LABEL ABLATION
+================================================================================
+
+Frozen evaluation clauses: 330
+Phase-5 origin label: Phase 5 Auto-Labeled Lease PDFs
+
+SUMMARY
+--------------------------------------------------------------------------------
+                   experiment  training_rows  phase5_rows  accuracy  macro_f1  weighted_f1
+      ablation_without_phase5           4853            0  0.469697  0.423659     0.475398
+         ablation_with_phase5           5041          188  0.500000  0.446697     0.497441
+difference_with_minus_without            188          188  0.030303  0.023038     0.022043
+
+INTERPRETATION RULE
+--------------------------------------------------------------------------------
+Positive differences mean that including Phase-5 provisional labels improved the metric.
+Negative differences mean that including Phase-5 provisional labels reduced the metric.

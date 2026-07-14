@@ -1,0 +1,41 @@
+Project Name: Legal Contract Analyzer
+Project Type: ML-Based Legal Contract Review SaaS
+Version: 1.0.0
+Development Status: Final QA and Documentation
+Current Phase: Phase 7
+
+Core Features:
+- PDF contract upload
+- Searchable PDF text extraction
+- Tesseract OCR fallback
+- Mixed text and OCR extraction
+- Legal clause splitting
+- Low, Medium, and High risk classification
+- 22-category clause-type classification
+- Hybrid ML and rule-based classification
+- Missing-field detection
+- Contract summary generation
+- Recommended legal review actions
+- Gemini-powered contract Q&A
+- SQLite contract persistence
+- Contract history and deletion
+- React frontend
+- FastAPI backend
+
+Best Clause Classification Model:
+Character n-gram TF-IDF
++ Balanced Logistic Regression
++ High-precision legal rules
+
+Final Hybrid Evaluation:
+Accuracy: 53.33%
+Macro F1: 46.86%
+Weighted F1: 53.13%
+
+OCR:
+Tesseract 5.4.0
+Supports searchable, scanned, and mixed PDFs.
+
+Important Limitation:
+The additional Phase 5 lease labels were generated provisionally and
+require a complete manual legal-label audit before production use.

@@ -1,0 +1,80 @@
+LEGAL CONTRACT ANALYZER — DEVELOPMENT ENVIRONMENT
+
+Operating System:
+Windows
+
+Development Environment:
+Visual Studio Code
+
+Terminal:
+Windows Command Prompt
+
+Python Version:
+Python 3.13.2
+
+Pip Version:
+pip 24.3.1
+
+Virtual Environment Location:
+backend\venv
+
+Tesseract OCR Version:
+tesseract v5.4.0.20240606
+
+Tesseract Dependencies:
+Leptonica 1.84.1
+libgif 5.2.1
+libjpeg-turbo 3.0.1
+libpng 1.6.43
+libtiff 4.6.0
+zlib 1.3
+libwebp 1.4.0
+libopenjp2 2.5.2
+libarchive 3.7.4
+
+CPU Optimizations Detected:
+AVX2
+AVX
+FMA
+SSE4.1
+
+Backend Framework:
+FastAPI
+
+Backend Server:
+Uvicorn
+
+Frontend:
+React.js with Vite
+
+Programming Languages:
+Python
+JavaScript
+CSS
+
+Database:
+SQLite
+
+PDF Text Extraction:
+PyMuPDF
+
+OCR Engine:
+Tesseract OCR with pytesseract and Pillow
+
+Machine Learning:
+scikit-learn
+TF-IDF Vectorization
+Logistic Regression
+Hybrid ML and Rule-Based Classification
+
+ML Model Storage:
+joblib PKL files
+
+LLM Provider:
+Google Gemini
+
+Configured Gemini Model:
+gemini-2.5-flash-lite
+
+Development Status:
+Phase 7 — Final QA, Documentation, and Submission Preparation

@@ -1,0 +1,29 @@
+PHASE 6 — HYBRID VALIDATION
+============================================================
+Frozen external examples: 330
+
+Results:
+  approach  accuracy  macro_f1  weighted_f1
+   ML only  0.500000  0.446697     0.497441
+Rules only  0.157576  0.191015     0.184353
+    Hybrid  0.533333  0.468610     0.531269
+
+Hybrid source usage:
+hybrid_source
+ml      288
+rule     42
+
+Best approach:
+  Hybrid
+  Accuracy: 0.5333
+  Macro F1: 0.4686
+  Weighted F1: 0.5313
+
+Report saved to:
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_report.txt
+
+Results saved to:
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_results.csv
+
+Predictions saved to:
+C:\Users\Ayyan Laptop\OneDrive\Documents\legal_contract_analyzer\backend\ml_model\phase6_hybrid_predictions.csv
