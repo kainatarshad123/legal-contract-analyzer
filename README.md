@@ -703,9 +703,9 @@ Users should consult a qualified legal professional before making decisions base
 
 **Project:** Legal Contract Analyzer
 **Developer:** Kainat Arshad
-**Institution:** Add your university or institution
-**Program:** Add your degree or course
-**Submission Date:** July 2026
+**Institution:** Career Institute
+**Program:** BSAI
+**Submission Date:** July 14, 2026
 
 ---
 
