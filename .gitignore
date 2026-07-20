@@ -58,3 +58,12 @@ backend/training_pdfs/
 backend/lease_pdfs/
 
 /package-lock.json
+
+# Transformer environment
+backend/transformer_venv/
+
+# Transformer model files and checkpoints
+backend/ml_model/transformer_clause_model/
+backend/transformer_training/prepared_data/
+backend/transformer_training/results/
+backend/transformer_training/**/checkpoint-*/

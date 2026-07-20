@@ -163,6 +163,7 @@ const NAV_ICONS = {
   clauses: IconLayers,
   risks: IconAlert,
   missing: IconFlag,
+  compare: IconLayers,
   history: IconClock,
 };
 
@@ -542,13 +543,19 @@ function App() {
       <main className="main-workspace">
         <TopBar analysisResult={analysisResult} onNewReview={handleNewReview} />
 
-        {!analysisResult && activeTab !== "history" && (
+        {!analysisResult &&
+          activeTab !== "history" &&
+          activeTab !== "compare" && (
           <LandingUpload
             selectedFile={selectedFile}
             uploading={uploading}
             handleFileChange={handleFileChange}
             handleUpload={handleUpload}
           />
+        )}
+
+        {activeTab === "compare" && (
+          <ComparisonView savedContracts={savedContracts} />
         )}
 
         {activeTab === "history" && (
@@ -561,10 +568,13 @@ function App() {
           />
         )}
 
-        {analysisResult && activeTab !== "history" && (
+        {analysisResult &&
+          activeTab !== "history" &&
+          activeTab !== "compare" && (
           <>
             {activeTab === "review" && (
               <ReviewWorkspace
+                analysisResult={analysisResult}
                 latestStructuredAnswer={latestStructuredAnswer}
                 setLatestStructuredAnswer={setLatestStructuredAnswer}
                 chatHistory={chatHistory}
@@ -618,6 +628,7 @@ function Sidebar({
     { id: "clauses", label: "Clauses" },
     { id: "risks", label: "Risks" },
     { id: "missing", label: "Missing info" },
+    { id: "compare", label: "Compare" },
     { id: "history", label: "History" },
   ];
 
@@ -639,7 +650,7 @@ function Sidebar({
 
     setActiveTab(tabId);
 
-    if (tabId === "history") {
+    if (tabId === "history" || tabId === "compare") {
       loadContractHistory();
     }
   };
@@ -1106,6 +1117,341 @@ function FeatureCard({ title, text, icon: Icon }) {
 /* History                                                             */
 /* ------------------------------------------------------------------ */
 
+
+function ComparisonView({ savedContracts }) {
+  const [baseContractId, setBaseContractId] = useState("");
+  const [comparisonContractId, setComparisonContractId] = useState("");
+  const [comparisonResult, setComparisonResult] = useState(null);
+  const [comparisonLoading, setComparisonLoading] = useState(false);
+  const [comparisonError, setComparisonError] = useState("");
+
+  useEffect(() => {
+    if (savedContracts.length >= 2) {
+      setBaseContractId((current) => current || savedContracts[0].contract_id);
+      setComparisonContractId(
+        (current) => current || savedContracts[1].contract_id
+      );
+    }
+  }, [savedContracts]);
+
+  const handleCompare = async () => {
+    if (!baseContractId || !comparisonContractId) {
+      setComparisonError("Select two saved contracts.");
+      return;
+    }
+
+    if (baseContractId === comparisonContractId) {
+      setComparisonError("Select two different contracts.");
+      return;
+    }
+
+    try {
+      setComparisonLoading(true);
+      setComparisonError("");
+      setComparisonResult(null);
+
+      const response = await fetch(`${API_BASE_URL}/compare-contracts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          base_contract_id: baseContractId,
+          comparison_contract_id: comparisonContractId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.detail || "Contract comparison failed.");
+      }
+
+      setComparisonResult(data);
+    } catch (error) {
+      console.error("Contract comparison error:", error);
+      setComparisonError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while comparing the contracts."
+      );
+    } finally {
+      setComparisonLoading(false);
+    }
+  };
+
+  const summaryItems = comparisonResult
+    ? [
+        ["Added", comparisonResult.summary?.added || 0],
+        ["Removed", comparisonResult.summary?.removed || 0],
+        ["Changed", comparisonResult.summary?.changed || 0],
+        ["Unchanged", comparisonResult.summary?.unchanged || 0],
+        ["Risk increased", comparisonResult.summary?.risk_increased || 0],
+        ["Risk decreased", comparisonResult.summary?.risk_decreased || 0],
+      ]
+    : [];
+
+  return (
+    <section className="comparison-workspace">
+      <div className="comparison-heading">
+        <div>
+          <p className="eyebrow">Clause-level contract diff</p>
+          <h1>Compare saved contracts</h1>
+          <p>
+            Select a base version and a revised version to review clause,
+            confidence, manual-review, and risk changes.
+          </p>
+        </div>
+      </div>
+
+      {savedContracts.length < 2 ? (
+        <div className="comparison-empty-state">
+          <IconLayers size={24} />
+          <h3>Two saved contracts are required</h3>
+          <p>
+            Upload and analyze at least two contracts before opening the
+            comparison workspace.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="comparison-controls">
+            <label>
+              <span>Base contract</span>
+              <select
+                value={baseContractId}
+                onChange={(event) => setBaseContractId(event.target.value)}
+              >
+                <option value="">Select a contract</option>
+                {savedContracts.map((contract) => (
+                  <option
+                    key={`base-${contract.contract_id}`}
+                    value={contract.contract_id}
+                  >
+                    {contract.filename}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <div className="comparison-arrow" aria-hidden="true">
+              →
+            </div>
+
+            <label>
+              <span>Comparison contract</span>
+              <select
+                value={comparisonContractId}
+                onChange={(event) =>
+                  setComparisonContractId(event.target.value)
+                }
+              >
+                <option value="">Select a contract</option>
+                {savedContracts.map((contract) => (
+                  <option
+                    key={`comparison-${contract.contract_id}`}
+                    value={contract.contract_id}
+                  >
+                    {contract.filename}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <button
+              type="button"
+              className="primary-btn comparison-submit-btn"
+              onClick={handleCompare}
+              disabled={comparisonLoading}
+            >
+              {comparisonLoading ? (
+                <>
+                  <span className="spinner" />
+                  Comparing...
+                </>
+              ) : (
+                <>
+                  <IconLayers size={15} />
+                  Compare contracts
+                </>
+              )}
+            </button>
+          </div>
+
+          {comparisonError && (
+            <div className="comparison-error">{comparisonError}</div>
+          )}
+
+          {comparisonResult && (
+            <>
+              <div className="comparison-contract-header">
+                <div>
+                  <span>Base</span>
+                  <strong>
+                    {comparisonResult.base_contract?.filename || "Base contract"}
+                  </strong>
+                  <small>
+                    {comparisonResult.base_contract?.overall_risk || "Unknown"} risk
+                    · {comparisonResult.base_contract?.total_clauses || 0} clauses
+                  </small>
+                </div>
+
+                <div>
+                  <span>Compared with</span>
+                  <strong>
+                    {comparisonResult.comparison_contract?.filename ||
+                      "Comparison contract"}
+                  </strong>
+                  <small>
+                    {comparisonResult.comparison_contract?.overall_risk ||
+                      "Unknown"}{" "}
+                    risk ·{" "}
+                    {comparisonResult.comparison_contract?.total_clauses || 0}{" "}
+                    clauses
+                  </small>
+                </div>
+              </div>
+
+              <div className="comparison-summary-grid">
+                {summaryItems.map(([label, value]) => (
+                  <div className="comparison-summary-card" key={label}>
+                    <span>{label}</span>
+                    <strong>{value}</strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="comparison-results">
+                <div className="comparison-results-heading">
+                  <div>
+                    <h2>Clause differences</h2>
+                    <p>
+                      Similar clauses are paired automatically. Review changed,
+                      added, and removed wording carefully.
+                    </p>
+                  </div>
+                  <span>
+                    {comparisonResult.clause_changes?.length || 0} results
+                  </span>
+                </div>
+
+                {(comparisonResult.clause_changes || []).map((change, index) => (
+                  <ComparisonChangeCard
+                    key={`${change.change_type}-${index}`}
+                    change={change}
+                    index={index}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+function ComparisonChangeCard({ change, index }) {
+  const baseClause = change.base_clause;
+  const comparisonClause = change.comparison_clause;
+  const similarity = Math.round((change.similarity || 0) * 100);
+
+  return (
+    <article className={`comparison-change-card ${change.change_type}`}>
+      <header className="comparison-change-header">
+        <div>
+          <span className={`change-type-badge ${change.change_type}`}>
+            {change.change_type}
+          </span>
+          <h3>
+            {comparisonClause?.clause_type ||
+              baseClause?.clause_type ||
+              `Clause difference ${index + 1}`}
+          </h3>
+        </div>
+
+        <div className="comparison-change-meta">
+          {change.change_type !== "added" &&
+            change.change_type !== "removed" && (
+              <span>{similarity}% similar</span>
+            )}
+          <span className={`risk-change-label ${change.risk_change}`}>
+            Risk {change.risk_change}
+          </span>
+        </div>
+      </header>
+
+      <div className="comparison-clause-grid">
+        <ComparisonClausePanel
+          label="Base clause"
+          clause={baseClause}
+          emptyText="This clause did not exist in the base contract."
+        />
+
+        <ComparisonClausePanel
+          label="Comparison clause"
+          clause={comparisonClause}
+          emptyText="This clause was removed from the comparison contract."
+        />
+      </div>
+
+      <footer className="comparison-change-footer">
+        <span>
+          Confidence change:{" "}
+          {change.confidence_change === null ||
+          change.confidence_change === undefined
+            ? "Not applicable"
+            : `${change.confidence_change >= 0 ? "+" : ""}${(
+                change.confidence_change * 100
+              ).toFixed(1)}%`}
+        </span>
+        <span>
+          Manual-review status:{" "}
+          {String(change.manual_review_change || "unchanged").replaceAll(
+            "_",
+            " "
+          )}
+        </span>
+      </footer>
+    </article>
+  );
+}
+
+function ComparisonClausePanel({ label, clause, emptyText }) {
+  if (!clause) {
+    return (
+      <div className="comparison-clause-panel empty">
+        <span className="comparison-panel-label">{label}</span>
+        <p>{emptyText}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="comparison-clause-panel">
+      <span className="comparison-panel-label">{label}</span>
+
+      <div className="comparison-clause-tags">
+        <RiskBadge risk={clause.risk_level} />
+        <span>{clause.confidence_label || "Unknown"} confidence</span>
+        {clause.needs_manual_review && (
+          <span className="manual-review-mini">Manual review</span>
+        )}
+      </div>
+
+      <p className="comparison-clause-text">
+        {clause.text || "No clause text available."}
+      </p>
+
+      {clause.risk_reason && (
+        <p className="comparison-risk-reason">
+          <strong>Risk reason:</strong> {clause.risk_reason}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function HistoryView({
   savedContracts,
   historyLoading,
@@ -1187,6 +1533,7 @@ function HistoryView({
 /* ------------------------------------------------------------------ */
 
 function ReviewWorkspace({
+  analysisResult,
   latestStructuredAnswer,
   setLatestStructuredAnswer,
   chatHistory,
@@ -1201,6 +1548,20 @@ function ReviewWorkspace({
 }) {
   const [answerCollapsed, setAnswerCollapsed] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+
+  const downloadReport = (format) => {
+    const contractId = analysisResult?.contract_id;
+
+    if (!contractId) {
+      alert("No saved contract is available to export.");
+      return;
+    }
+
+    const exportUrl =
+      `${API_BASE_URL}/contracts/${encodeURIComponent(contractId)}/export/${format}`;
+
+    window.open(exportUrl, "_blank", "noopener,noreferrer");
+  };
 
   const quickPrompts = ["Summarize", "Risky clauses", "Payment terms", "Termination", "Missing info"];
 
@@ -1227,13 +1588,40 @@ function ReviewWorkspace({
         </div>
 
         <div className="summary-actions">
+          <div className="report-export-actions">
+            <button
+              type="button"
+              className="report-export-btn"
+              onClick={() => downloadReport("pdf")}
+              disabled={!analysisResult?.contract_id}
+            >
+              <IconDoc size={14} />
+              Download PDF
+            </button>
+
+            <button
+              type="button"
+              className="report-export-btn"
+              onClick={() => downloadReport("docx")}
+              disabled={!analysisResult?.contract_id}
+            >
+              <IconDoc size={14} />
+              Download DOCX
+            </button>
+          </div>
+
           <label className="file-picker">
             <input type="file" accept="application/pdf" onChange={handleFileChange} />
             <IconPaperclip size={14} />
             {selectedFile ? selectedFile.name : "Replace PDF"}
           </label>
 
-          <button onClick={handleUpload} disabled={uploading}>
+          <button
+            type="button"
+            className="reanalyze-btn"
+            onClick={handleUpload}
+            disabled={uploading}
+          >
             {uploading ? "Analyzing..." : "Re-analyze"}
           </button>
         </div>
@@ -1520,17 +1908,37 @@ function StructuredAnswer({ data }) {
           <h3>Related clauses</h3>
 
           <div className="related-clause-list">
-            {data.related_clauses.map((clause) => (
-              <div key={clause.clause_number} className="related-clause-card">
+            {data.related_clauses.map((clause, index) => (
+              <div
+                key={`${clause.clause_number || "unknown"}-${index}`}
+                className="related-clause-card"
+              >
                 <div>
-                  <strong>Clause {clause.clause_number}</strong>
-                  <RiskBadge risk={clause.risk_level} small />
+                  <strong>
+                    {clause.clause_number
+                      ? `Clause ${clause.clause_number}`
+                      : "Related clause"}
+                  </strong>
+
+                  {clause.risk_level && (
+                    <RiskBadge risk={clause.risk_level} small />
+                  )}
                 </div>
 
-                <p>{clause.preview}</p>
+                {clause.clause_type && (
+                  <small className="related-clause-type">
+                    {clause.clause_type}
+                  </small>
+                )}
+
+                {(clause.preview || clause.reason) && (
+                  <p>{clause.preview || clause.reason}</p>
+                )}
 
                 {clause.risk_signals?.length > 0 && (
-                  <small>Signals: {formatRiskSignals(clause.risk_signals)}</small>
+                  <small>
+                    Signals: {formatRiskSignals(clause.risk_signals)}
+                  </small>
                 )}
               </div>
             ))}
@@ -1538,7 +1946,78 @@ function StructuredAnswer({ data }) {
         </div>
       )}
 
-      <div className="prototype-note">{data.disclaimer || "Prototype ML-based review. Not legal advice."}</div>
+      {data.sources?.length > 0 && (
+        <div className="structured-card rag-sources-card">
+          <div className="rag-sources-heading">
+            <div>
+              <p className="eyebrow">Retrieved evidence</p>
+              <h3>Sources</h3>
+            </div>
+
+            <span className="rag-source-count">
+              {data.sources.length} source{data.sources.length === 1 ? "" : "s"}
+            </span>
+          </div>
+
+          <p className="rag-sources-intro">
+            These are the contract sections retrieved before Gemini generated
+            the answer.
+          </p>
+
+          <div className="rag-source-list">
+            {data.sources.map((source, index) => {
+              const similarity = Number(source.similarity);
+              const similarityPercent = Number.isFinite(similarity)
+                ? `${Math.round(similarity * 100)}% match`
+                : "Match score unavailable";
+
+              return (
+                <article
+                  key={`${source.source_number || index + 1}-${source.chunk_index || index}`}
+                  className="rag-source-item"
+                >
+                  <div className="rag-source-item-header">
+                    <div>
+                      <span className="rag-source-number">
+                        Source {source.source_number || index + 1}
+                      </span>
+
+                      <strong>
+                        {source.clause_number
+                          ? `Clause ${source.clause_number}`
+                          : "Contract section"}
+                      </strong>
+                    </div>
+
+                    <span className="rag-similarity-badge">
+                      {similarityPercent}
+                    </span>
+                  </div>
+
+                  <div className="rag-source-meta">
+                    <span>
+                      {source.clause_type || "Not classified"}
+                    </span>
+
+                    {source.chunk_index !== undefined &&
+                      source.chunk_index !== null && (
+                        <span>Chunk {Number(source.chunk_index) + 1}</span>
+                      )}
+                  </div>
+
+                  <p className="rag-source-snippet">
+                    {source.snippet || "No source preview was returned."}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="prototype-note">
+        {data.disclaimer || "Prototype ML-based review. Not legal advice."}
+      </div>
     </div>
   );
 }
@@ -1677,7 +2156,11 @@ function ClausesView({ analysisResult }) {
 
       <div className="clause-list">
         {clauses.map((clause) => (
-          <ClauseCard key={clause.clause_number} clause={clause} />
+          <ClauseCard
+            key={clause.clause_number}
+            clause={clause}
+            contractId={analysisResult?.contract_id}
+          />
         ))}
       </div>
     </section>
@@ -1704,7 +2187,11 @@ function RiskView({ analysisResult }) {
 
       <div className="clause-list">
         {riskyClauses.map((clause) => (
-          <ClauseCard key={clause.clause_number} clause={clause} />
+          <ClauseCard
+            key={clause.clause_number}
+            clause={clause}
+            contractId={analysisResult?.contract_id}
+          />
         ))}
       </div>
     </section>
@@ -1742,7 +2229,11 @@ function MissingFieldsView({ analysisResult }) {
   );
 }
 
-function ClauseCard({ clause }) {
+function ClauseCard({ clause, contractId }) {
+  const [explanation, setExplanation] = useState(null);
+  const [explanationLoading, setExplanationLoading] = useState(false);
+  const [explanationError, setExplanationError] = useState("");
+
   const reason =
     clause.risk_reason ||
     (clause.risk_signals?.length > 0
@@ -1754,8 +2245,56 @@ function ClauseCard({ clause }) {
           .join(", ")
       : "No major risk keyword detected");
 
+  const confidenceValue = Number(clause.clause_type_confidence || 0);
+  const confidencePercent = Math.round(confidenceValue * 100);
+  const confidenceLabel = clause.confidence_label || "Low";
+  const confidenceClass = confidenceLabel.toLowerCase();
+  const needsManualReview = Boolean(clause.needs_manual_review);
+
+  const handleExplainClause = async () => {
+    if (!contractId) {
+      setExplanationError("The contract ID is missing. Upload or reopen the contract.");
+      return;
+    }
+
+    try {
+      setExplanationLoading(true);
+      setExplanationError("");
+
+      const response = await fetch(`${API_BASE_URL}/explain-clause`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contract_id: contractId,
+          clause_number: clause.clause_number,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.detail || "The clause explanation could not be generated."
+        );
+      }
+
+      setExplanation(data);
+    } catch (error) {
+      console.error("Clause explanation error:", error);
+      setExplanationError(
+        error instanceof Error
+          ? error.message
+          : "The clause explanation could not be generated."
+      );
+    } finally {
+      setExplanationLoading(false);
+    }
+  };
+
   return (
-    <article className="clause-card">
+    <article className={`clause-card ${needsManualReview ? "manual-review-card" : ""}`}>
       <div className="clause-card-header">
         <div>
           <h3>
@@ -1765,10 +2304,29 @@ function ClauseCard({ clause }) {
           <p>Reason: {reason}</p>
         </div>
 
-        <span className={`risk-pill ${clause.risk_level?.toLowerCase()}`}>
-          {clause.risk_level}
-        </span>
+        <div className="clause-badge-group">
+          <span className={`confidence-pill ${confidenceClass}`}>
+            {confidenceLabel} confidence · {confidencePercent}%
+          </span>
+
+          <span className={`risk-pill ${clause.risk_level?.toLowerCase()}`}>
+            {clause.risk_level}
+          </span>
+        </div>
       </div>
+
+      {needsManualReview && (
+        <div className="manual-review-alert" role="alert">
+          <div className="manual-review-alert-title">
+            <IconFlag size={15} />
+            <strong>Needs manual review</strong>
+          </div>
+          <p>
+            {clause.manual_review_reason ||
+              "The clause-type prediction has low confidence and should be checked manually."}
+          </p>
+        </div>
+      )}
 
       <p className="clause-preview">{clause.preview}</p>
 
@@ -1779,12 +2337,27 @@ function ClauseCard({ clause }) {
         </div>
 
         <div>
+          <span>Classification confidence</span>
+          <strong>{confidenceLabel} ({confidencePercent}%)</strong>
+        </div>
+
+        <div>
+          <span>Review status</span>
+          <strong>
+            {clause.review_status ||
+              (needsManualReview
+                ? "Needs manual review"
+                : "Manual review not required")}
+          </strong>
+        </div>
+
+        <div>
           <span>Party affected</span>
           <strong>{clause.party_affected || "Not clearly specified"}</strong>
         </div>
 
         <div>
-          <span>ML prediction</span>
+          <span>Risk prediction</span>
           <strong>{clause.ml_prediction || "Unknown"}</strong>
         </div>
 
@@ -1794,11 +2367,97 @@ function ClauseCard({ clause }) {
         </div>
       </div>
 
+      {clause.confidence_basis && (
+        <p className="confidence-basis-note">
+          Confidence basis: {clause.confidence_basis}
+        </p>
+      )}
+
       {clause.recommended_action && (
         <div className="recommended-action-box">
           <span>Recommended action</span>
           <p>{clause.recommended_action}</p>
         </div>
+      )}
+
+      <div className="clause-explain-actions">
+        <button
+          type="button"
+          className="explain-clause-btn"
+          onClick={handleExplainClause}
+          disabled={explanationLoading}
+        >
+          <IconSparkle size={15} />
+          {explanationLoading
+            ? "Explaining clause..."
+            : explanation
+              ? "Explain again"
+              : "Explain this clause"}
+        </button>
+      </div>
+
+      {explanationError && (
+        <div className="clause-explanation-error" role="alert">
+          {explanationError}
+        </div>
+      )}
+
+      {explanation && (
+        <section className="clause-explanation-panel">
+          <div className="clause-explanation-heading">
+            <div>
+              <p className="eyebrow">Gemini explanation</p>
+              <h4>Plain-English clause explanation</h4>
+            </div>
+            <span>{explanation.risk_level || clause.risk_level || "Unknown"} risk</span>
+          </div>
+
+          <div className="clause-explanation-section">
+            <h5>What it means</h5>
+            <p>{explanation.plain_english_explanation}</p>
+          </div>
+
+          <div className="clause-explanation-section">
+            <h5>Practical effect</h5>
+            <p>{explanation.practical_effect}</p>
+          </div>
+
+          {explanation.main_risks?.length > 0 && (
+            <div className="clause-explanation-section">
+              <h5>Main risks</h5>
+              <ul>
+                {explanation.main_risks.map((risk, index) => (
+                  <li key={`${clause.clause_number}-risk-${index}`}>{risk}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {explanation.questions_to_consider?.length > 0 && (
+            <div className="clause-explanation-section">
+              <h5>Questions to consider</h5>
+              <ul>
+                {explanation.questions_to_consider.map((question, index) => (
+                  <li key={`${clause.clause_number}-question-${index}`}>
+                    {question}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {explanation.important_note && (
+            <div className="clause-explanation-note">
+              <strong>Important note</strong>
+              <p>{explanation.important_note}</p>
+            </div>
+          )}
+
+          <p className="clause-explanation-disclaimer">
+            {explanation.disclaimer ||
+              "This explanation is general information and is not legal advice."}
+          </p>
+        </section>
       )}
     </article>
   );

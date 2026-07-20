@@ -2,244 +2,167 @@
 
 ## Project Overview
 
-The **Legal Contract Analyzer** is an ML-based legal document analysis system designed to help users review contracts more efficiently.
+The **Legal Contract Analyzer** is an ML-based legal document review SaaS prototype for lease, rent, tenancy, and related commercial agreements. It accepts PDF contracts, extracts searchable text or applies selective OCR, segments the document into clauses, predicts risk and clause type, identifies missing information, and presents structured review results through a React interface.
 
-The application accepts legal contracts in PDF format, extracts their text, identifies individual clauses, classifies clause types, predicts clause risk levels, highlights potentially problematic language, and allows users to ask questions about the uploaded contract.
+The system combines a character TF-IDF classifier, balanced Logistic Regression, deterministic legal rules, confidence-based human-review flags, SQLite persistence, Gemini-assisted explanations, retrieval-augmented generation (RAG), contract comparison, and PDF/DOCX export.
 
-The system combines machine learning, rule-based validation, OCR, document processing, and generative AI to provide a structured contract review experience.
-
-> **Project Status: Completed and Evaluation-Strengthened**
-> All planned development phases have been implemented and tested. Supervisor-requested evaluation strengthening, backend type checking, and the Phase-5 ablation study have also been completed.
-
----
+> **Project status: Completed and evaluation-strengthened.**
+> All core phases and post-completion enhancements have been implemented and tested. A transformer feasibility experiment was completed, evaluated against the frozen external set, and intentionally not adopted because it underperformed the production hybrid classifier.
 
 ## Main Features
 
-* Upload and analyze legal contracts in PDF format
-* Extract text from searchable PDFs
-* Perform OCR on scanned or image-based PDFs
-* Clean and preprocess extracted contract text
-* Divide contracts into individual clauses
-* Predict clause risk levels
-* Classify legal clause types
-* Apply rule-based validation to improve predictions
-* Generate contract summaries
-* Identify important and potentially risky clauses
-* Ask contract-related questions
-* Store analyzed contracts and results in SQLite
-* View previously analyzed contracts
-* Evaluate ML models using a frozen 330-clause external test set
-* Generate 22-class confusion matrices and per-class precision, recall, F1-score, and support
-* Run a Phase-5 label ablation study
-* Apply static type checking across the active backend with `mypy`
-* Display model predictions through a React frontend
+- Validated PDF upload with MIME, signature, corruption, file-size, and page-count checks
+- Searchable-PDF extraction using PyMuPDF
+- Page-level Tesseract OCR fallback for scanned or mixed PDFs
+- Text cleaning and legal clause segmentation
+- Low, Medium, and High risk classification with reasons and actions
+- 22-category clause-type classification
+- Character TF-IDF + balanced Logistic Regression production model
+- High-precision legal-rule validation and hybrid prediction
+- Confidence labels and `needs_manual_review` flagging
+- Missing-field and placeholder detection
+- Affected-party detection
+- Clause-level plain-English explanation through Gemini
+- RAG-based contract Q&A using stored chunks instead of full-contract prompt stuffing
+- Visible Q&A sources with clause number, clause type, match score, and snippet
+- Contract history, reopening, and deletion through SQLite
+- Clause-level contract comparison with text changes and risk deltas
+- PDF and DOCX analysis export
+- Frozen 330-clause external evaluation
+- Per-class precision, recall, F1-score, support, and confusion matrices
+- Phase-5 label ablation study
+- DistilBERT transformer feasibility experiment
+- Static type checking with `mypy`
 
----
-
-## System Architecture
-
-The system follows a client-server architecture.
+## Architecture
 
 ```text
 React + Vite Frontend
-          |
-          v
-FastAPI Backend API
-          |
-          v
-PDF Text Extraction / OCR
-          |
-          v
-Text Cleaning and Clause Segmentation
-          |
-          v
-Risk Classification Model
-          |
-          v
-Hybrid Clause-Type Classifier
-          |
-          v
-Rule-Based Validation
-          |
-          +----------------------+
-          |                      |
-          v                      v
-     SQLite Database        Gemini API
-          |                      |
-          +----------+-----------+
-                     |
-                     v
-          Results Returned to Frontend
+        |
+        v
+FastAPI Routers and Pydantic Schemas
+        |
+        +---------------- PDF validation
+        +---------------- PyMuPDF extraction / Tesseract OCR
+        +---------------- Text cleaning and clause segmentation
+        +---------------- Risk model and legal risk rules
+        +---------------- Character TF-IDF clause classifier
+        +---------------- High-precision hybrid clause rules
+        +---------------- Confidence/manual-review metadata
+        +---------------- SQLite contracts + contract_chunks
+        +---------------- Contract comparison and report export
+        +---------------- RAG retrieval -> Gemini
+        |
+        v
+Structured results and evidence sources returned to frontend
 ```
-
----
 
 ## Technology Stack
 
 ### Frontend
 
-* React
-* Vite
-* JavaScript
-* HTML
-* CSS
-* Fetch API
+- React
+- Vite
+- JavaScript
+- CSS
+- Fetch API
 
 ### Backend
 
-* Python 3.13
-* FastAPI
-* Uvicorn
-* Pydantic
-* SQLite
-* Python type hints
-* `mypy` static analysis
-
-### Machine Learning
-
-* Scikit-learn
-* TF-IDF vectorization
-* Supervised text classification
-* Hybrid ML and rule-based classification
-* Joblib for model persistence
+- Python 3.13
+- FastAPI
+- Uvicorn
+- Pydantic
+- SQLite
+- Python type hints and `mypy`
 
 ### Document Processing
 
-* PyMuPDF
-* Regular expressions
-* Text preprocessing
-* Clause segmentation
-* OCR processing for scanned documents
+- PyMuPDF (`fitz`)
+- Tesseract OCR
+- `pytesseract`
+- Pillow
+- Regular expressions and custom clause segmentation
 
-### AI Integration
+### Machine Learning
 
-* Google Gemini API
+- Scikit-learn
+- Character and word TF-IDF
+- Balanced Logistic Regression
+- Hybrid ML + deterministic legal rules
+- Joblib model persistence
+- Hugging Face Transformers and PyTorch for the DistilBERT experiment
 
-### Database
+### AI and Retrieval
 
-* SQLite
-
-### Data Analysis and Evaluation
-
-* Pandas
-* NumPy
-* Scikit-learn evaluation metrics
-* Confusion matrix
-* Classification report
-* Accuracy score
-* Precision
-* Recall
-* Macro F1 score
-* Weighted F1 score
-
----
+- Gemini API (`gemini-2.5-flash-lite`)
+- Clause-aware document chunks
+- TF-IDF retrieval
+- Cosine-similarity ranking
+- Top-k evidence selection
 
 ## Application Workflow
 
-1. The user uploads a legal contract through the React frontend.
-2. The frontend sends the document to the FastAPI backend.
-3. The backend checks whether the PDF contains searchable text.
-4. PyMuPDF extracts text from searchable PDFs.
-5. OCR is used when a PDF is scanned or contains insufficient text.
-6. Extracted text is cleaned and normalized.
-7. The contract is divided into individual legal clauses.
-8. The risk classification model predicts the risk level of each clause.
-9. The clause-type classifier predicts the legal category of each clause.
-10. Rule-based validation checks and improves selected predictions.
-11. Contract information and analysis results are stored in SQLite.
-12. Gemini generates explanations, summaries, and answers to user questions.
-13. The processed results are returned to the frontend.
-14. The frontend displays the contract summary, clause types, risks, explanations, and related information.
+1. The user uploads a PDF contract.
+2. The backend validates size, type, signature, structure, and page count.
+3. PyMuPDF extracts selectable text.
+4. Pages with insufficient text are processed with Tesseract OCR.
+5. Text is cleaned and segmented into legal clauses.
+6. The risk model and legal rules assign risk, reason, affected party, and action.
+7. The character TF-IDF classifier predicts one of 22 clause categories.
+8. High-precision rules validate or correct selected low-confidence predictions.
+9. Confidence labels and manual-review flags are generated.
+10. Contract text, structured analysis, and RAG chunks are stored in SQLite.
+11. The frontend displays summaries, risks, missing fields, and detailed clause cards.
+12. Open-ended Q&A retrieves the most relevant chunks and sends only those excerpts to Gemini.
+13. Users can inspect evidence sources, explain one clause, compare contracts, or export reports.
 
----
+## RAG-Based Contract Q&A
 
-## Machine Learning Components
+The Q&A system no longer sends the full contract text to Gemini for ordinary open-ended questions.
 
-### Risk Classification Model
+- Clauses are stored as retrieval chunks in SQLite.
+- Long clauses are divided using controlled overlap.
+- TF-IDF represents the question and stored chunks.
+- Cosine similarity ranks the chunks.
+- The top five chunks above the similarity threshold are included in the prompt.
+- Gemini must answer from those excerpts or state that the evidence is insufficient.
+- The frontend displays source number, clause number, clause type, similarity score, chunk index, and snippet.
+- Older contracts are backfilled automatically when they are first queried.
+- Contract chunks are deleted with the parent contract.
 
-The risk model predicts whether a legal clause represents a particular level of contractual risk.
+Structured questions such as contract summary, risky clauses, missing information, payment terms, and termination terms continue to use deterministic answer builders.
 
-The risk categories used by the system may include:
+## Clause Classification and Confidence
 
-* Low Risk
-* Medium Risk
-* High Risk
+The production classifier combines:
 
-The model processes clause text using TF-IDF features and a supervised machine-learning classifier.
+- Character n-gram TF-IDF features
+- Balanced Logistic Regression
+- Prediction confidence
+- High-precision legal keyword rules
+- Secondary-category detection
+- Fallback logic
 
-### Clause-Type Classification Model
+Predictions include:
 
-The clause-type classifier categorizes clauses into legal groups such as:
+- `clause_type`
+- `clause_type_confidence`
+- `clause_type_source`
+- `confidence_label`
+- `needs_manual_review`
+- `review_threshold` (0.55)
+- `high_confidence_threshold` (0.70)
 
-* Assignment and Subletting
-* Confidentiality
-* Dispute Resolution
-* Governing Law
-* Insurance
-* Maintenance and Repairs
-* Payment Obligations
-* Renewal
-* Rent
-* Security Deposit
-* Termination
-* Utilities
-* General Obligations
-* Other supported clause categories
-
-### Hybrid Classification
-
-The final clause classifier combines:
-
-* Machine-learning predictions
-* Prediction confidence
-* Keyword patterns
-* Rule-based legal validation
-* Fallback classification logic
-
-This hybrid approach helps improve system reliability when the ML model has low confidence.
-
----
+This avoids presenting all predictions as equally certain.
 
 ## Datasets
 
-The project uses a combined legal clause dataset created from multiple sources.
+The final clause-type collection contains **6,486 rows**, including **5,041 training**, **749 validation**, and **696 test** examples across **22 labels**. It combines LEDGAR provisions with lease-domain clauses and additional Phase-5 examples.
 
-### LEDGAR Dataset
-
-The LEDGAR dataset provides labeled legal clauses from commercial contracts and is used to train the clause-type classification model.
-
-### Lease and Rental Agreement Dataset
-
-A curated lease dataset is used to improve classification for rental and property-related clauses.
-
-The lease dataset includes examples from:
-
-* Residential lease agreements
-* Commercial lease agreements
-* Rental agreements
-* Manually curated clause examples
-
-### Combined Dataset
-
-The final training dataset combines LEDGAR clauses with lease-specific clauses.
-
-Dataset preparation includes:
-
-* Category mapping
-* Text cleaning
-* Duplicate handling
-* Train, validation, and test splits
-* Source-document tracking
-* External test separation
-* Label normalization
-
----
+The frozen external evaluation set contains **330 manually reviewed clauses** and was excluded from training. Dataset validation found zero duplicate clause-label rows and zero normalized text overlap between the combined dataset and frozen external set.
 
 ## Model Evaluation
-
-The clause-type models were evaluated on a **frozen external evaluation set containing 330 manually reviewed clauses**. This dataset was excluded from training and remained unchanged across experiments.
-
-### Final Aggregate Results
 
 | Approach | Accuracy | Macro F1 | Weighted F1 |
 |---|---:|---:|---:|
@@ -247,470 +170,216 @@ The clause-type models were evaluated on a **frozen external evaluation set cont
 | Character TF-IDF model | 50.00% | 44.67% | 49.74% |
 | Final hybrid ML + rules | **53.33%** | **46.86%** | **53.13%** |
 
-The final hybrid system used:
+The final hybrid used **288 ML decisions** and **42 rule decisions**, showing that rules acted as targeted corrections rather than replacing the classifier.
 
-* **288 ML predictions**
-* **42 rule-based corrections**
-
-### Detailed 22-Class Evaluation
-
-Aggregate accuracy was not treated as sufficient evidence of classifier quality. The final evaluation therefore also produced:
-
-* A 22 × 22 confusion matrix
-* Per-class precision
-* Per-class recall
-* Per-class F1-score
-* Per-class support
-* Macro and weighted averages
-* Detailed prediction files
-
-Generated files include:
-
-```text
-backend/evaluation/
-├── character_model_classification_report.csv
-├── character_model_confusion_matrix.csv
-├── character_model_confusion_matrix.png
-├── final_hybrid_classification_report.csv
-├── final_hybrid_confusion_matrix.csv
-├── final_hybrid_confusion_matrix.png
-├── detailed_evaluation_predictions.csv
-├── detailed_evaluation_summary.csv
-└── detailed_evaluation_summary.txt
-```
-
-### Phase-5 Label Ablation Study
-
-To measure the effect of the 188 provisional automatically labelled Phase-5 lease clauses, two otherwise identical character TF-IDF classifiers were trained:
-
-1. Without the Phase-5 provisional labels
-2. With the Phase-5 provisional labels
-
-Both models used the same feature configuration, classifier settings, random seed, preprocessing, class order, and frozen evaluation set.
+### Phase-5 Ablation
 
 | Training configuration | Accuracy | Macro F1 | Weighted F1 |
 |---|---:|---:|---:|
 | Without Phase-5 labels | 46.97% | 42.37% | 47.54% |
 | With Phase-5 labels | **50.00%** | **44.67%** | **49.74%** |
-| Difference | **+3.03 points** | **+2.30 points** | **+2.20 points** |
+| Difference | **+3.03 pp** | **+2.30 pp** | **+2.20 pp** |
 
-The ablation suggests that the Phase-5 lease clauses provided useful domain adaptation. However, because those labels were automatically generated and not fully manually audited, they remain provisional and should be legally reviewed before production deployment.
+The additional lease examples improved the selected character model, although those automatically generated labels remain provisional pending complete legal review.
 
-Generated ablation files include:
+## Transformer Fine-Tuning Experiment
 
-```text
-backend/evaluation/
-├── ablation_without_phase5_classification_report.csv
-├── ablation_with_phase5_classification_report.csv
-├── phase5_ablation_summary.csv
-├── phase5_ablation_per_class.csv
-└── phase5_ablation_summary.txt
-```
+A DistilBERT sequence-classification pipeline was implemented using the same 22-class taxonomy and the same frozen 330-clause evaluation set.
 
-### Backend Type Safety
+Because the experiment was run locally on CPU under a same-day submission constraint, the feasibility model used a maximum sequence length of 96 and approximately 0.20 epoch.
 
-Type hints were added consistently across the active backend, including:
+| Model | Accuracy | Macro F1 | Weighted F1 |
+|---|---:|---:|---:|
+| Current hybrid | **53.33%** | **46.86%** | **53.13%** |
+| DistilBERT feasibility run | 6.06% | 2.61% | 4.48% |
 
-* Database functions
-* Contract storage
-* PDF and OCR processing
-* Text cleaning and clause segmentation
-* Risk analysis
-* Clause-type classification
-* Structured answer builders
-* API endpoints
-* Evaluation scripts
+Additional transformer measurements:
 
-Static analysis was run with:
+- Average confidence: 5.38%
+- Model size: approximately 1.02 GB
+- CPU inference: approximately 103-120 ms per clause
+- Adoption decision: **not adopted**
 
-```cmd
-python -m mypy main.py evaluate_external_test.py validate_hybrid_clause_model.py evaluation_strengthening
-```
+The reduced run was severely undertrained, so it does not establish the maximum possible transformer performance. It does establish that this trained artifact should not replace or augment the stronger, smaller production hybrid. A full multi-epoch GPU experiment with a legal-domain pretrained model remains future research.
 
-Final result:
+## Contract Comparison
 
-```text
-Success: no issues found in 5 source files
-```
+Two stored contracts can be compared at clause level. The interface reports:
 
-The active files were also syntax-checked with:
+- Added clauses
+- Removed clauses
+- Changed clauses
+- Related clause text differences
+- Clause-category changes
+- Risk-level changes and risk deltas
 
-```cmd
-python -m py_compile main.py validate_hybrid_clause_model.py
-```
+This supports template-versus-signed-contract and draft-versus-draft review workflows.
 
+## PDF and DOCX Export
 
-## OCR Support
+The structured analysis can be exported as:
 
-The system supports both searchable and scanned PDF contracts.
+- A shareable PDF report
+- An editable DOCX report
 
-### Searchable PDFs
-
-Text is extracted directly using PyMuPDF.
-
-### Scanned PDFs
-
-When insufficient text is detected, the application uses OCR to extract text from rendered PDF pages.
-
-The extraction method may be recorded as:
-
-* Text
-* OCR
-* Mixed
-
-This allows the system to process a wider range of legal documents.
-
----
-
-## Gemini API Integration
-
-Google Gemini is used for natural-language contract assistance.
-
-Gemini can help the system:
-
-* Generate readable contract summaries
-* Explain difficult legal language
-* Answer questions about the uploaded contract
-* Provide general guidance about identified clauses
-* Describe potential concerns
-* Produce user-friendly responses based on extracted contract content
-
-Gemini is not used as a replacement for the trained ML models. The ML models perform structured classification, while Gemini provides natural-language explanations and question answering.
-
----
+Exports include contract metadata, summary, risk overview, missing fields, clause categories, confidence, affected party, risk reason, and recommended action.
 
 ## Database
 
-SQLite is used to store application data locally.
+SQLite stores:
 
-Stored information may include:
+- Contract ID
+- Filename and content type
+- Full extracted contract text
+- Structured clause analysis
+- Overall analysis
+- Creation date
+- RAG chunks with chunk index, clause number, clause type, and chunk text
 
-* Contract ID
-* Original filename
-* Extracted text
-* Upload date
-* Contract metadata
-* Clause analysis results
-* Risk predictions
-* Clause-type predictions
-* Contract history
-
----
-
-## Project Structure
-
-The exact structure may vary depending on the final version of the project.
+## Backend Structure
 
 ```text
-Legal-contract/
-│
-├── backend/
-│   ├── main.py
-│   ├── database files
-│   ├── document extraction modules
-│   ├── OCR modules
-│   ├── clause processing modules
-│   ├── Gemini integration
-│   │
-│   ├── ml_model/
-│   │   ├── training scripts
-│   │   ├── trained models
-│   │   ├── vectorizers
-│   │   ├── datasets
-│   │   └── evaluation files
-│   │
-│   ├── evaluation/
-│   │   ├── classification reports
-│   │   ├── confusion matrix CSV files
-│   │   ├── confusion matrix PNG files
-│   │   ├── ablation reports
-│   │   └── detailed prediction files
-│   │
-│   ├── evaluation_strengthening/
-│   │   ├── generate_detailed_evaluation.py
-│   │   └── run_phase5_ablation.py
-│   │
-│   ├── mypy.ini
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── assets/
-│   │   ├── App.jsx
-│   │   ├── App.css
-│   │   └── main.jsx
-│   │
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.js
-│
-├── development_archive/
-│   ├── phase summaries
-│   ├── evaluation records
-│   ├── development notes
-│   └── previous implementation files
-│
-├── README.md
-└── .gitignore
+backend/
+├── main.py
+├── routers/
+│   ├── contracts.py
+│   └── qa.py
+├── services/
+│   ├── upload_validator.py
+│   ├── pdf_extraction.py
+│   ├── ocr.py
+│   ├── text_processing.py
+│   ├── risk_analyzer.py
+│   ├── clause_classifier.py
+│   ├── clause_rules.py
+│   ├── contract_analysis.py
+│   ├── gemini_client.py
+│   └── rag_service.py
+├── db/
+│   └── database.py
+├── schemas/
+│   └── qa.py
+├── ml_model/
+│   ├── clause_type_model.pkl
+│   ├── clause_type_vectorizer.pkl
+│   ├── combined_clause_type_dataset.csv
+│   ├── external_test_clauses_final.csv
+│   └── transformer_clause_model/
+├── transformer_training/
+│   ├── inspect_transformer_data.py
+│   ├── prepare_transformer_dataset.py
+│   ├── train_transformer_classifier.py
+│   ├── evaluate_transformer_classifier.py
+│   └── compare_clause_models.py
+├── evaluation/
+└── contracts.db
 ```
-
-Adjust this structure so that it matches the actual folders and filenames in your project.
-
----
 
 ## Installation
 
-## 1. Clone or Open the Project
-
-```bash
-git clone YOUR_REPOSITORY_URL
-cd Legal-contract
-```
-
-When running the project locally without Git, open the main project folder in Visual Studio Code.
-
----
-
-## 2. Backend Setup
-
-Open Command Prompt and navigate to the backend folder:
+### Backend
 
 ```cmd
-cd "C:\Users\YourName\Documents\Legal-contract\backend"
-```
-
-Create a virtual environment:
-
-```cmd
+cd "C:\Users\YourName\Documents\legal_contract_analyzer\backend"
 python -m venv venv
-```
-
-Activate the virtual environment:
-
-```cmd
 venv\Scripts\activate
-```
-
-Install the backend dependencies:
-
-```cmd
 pip install -r requirements.txt
 ```
 
----
-
-## 3. Environment Variables
-
-Create a `.env` file inside the backend folder.
-
-Example:
+Create `backend/.env`:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Do not upload the `.env` file or expose API keys in the source code.
-
----
-
-## 4. Start the Backend
-
-From the backend directory, run:
+Start the backend:
 
 ```cmd
-python -m uvicorn main:app
+uvicorn main:app --reload
 ```
 
-The backend should be available at:
+Backend: `http://127.0.0.1:8000`  
+Swagger UI: `http://127.0.0.1:8000/docs`
 
-```text
-http://127.0.0.1:8000
-```
-
-FastAPI documentation should be available at:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
----
-
-## 5. Frontend Setup
-
-Open a second Command Prompt window and navigate to the frontend folder:
+### Frontend
 
 ```cmd
-cd "C:\Users\YourName\Documents\Legal-contract\frontend"
-```
-
-Install frontend dependencies:
-
-```cmd
+cd "C:\Users\YourName\Documents\legal_contract_analyzer\frontend"
 npm install
-```
-
-Start the frontend:
-
-```cmd
 npm run dev
 ```
 
-Vite will display the local frontend URL, normally:
+Frontend: normally `http://localhost:5173`
 
-```text
-http://localhost:5173
-```
+## Main API Routes
 
-Open this address in a web browser.
+| Method | Route | Purpose |
+|---|---|---|
+| `GET` | `/` | Backend status |
+| `POST` | `/upload-contract` | Validate, extract, analyze, chunk, store, and return a contract |
+| `POST` | `/ask-contract` | Structured or RAG-grounded contract Q&A |
+| `POST` | `/explain-clause` | Explain one selected clause in plain English |
+| `GET` | `/contracts` | List saved contracts |
+| `GET` | `/contracts/{contract_id}` | Retrieve one stored contract |
+| `DELETE` | `/contracts/{contract_id}` | Delete a contract and its chunks |
 
----
-
-## API Endpoints
-
-The final backend exposes the following main endpoints:
-
-| Method   | Endpoint                   | Purpose                          |
-| -------- | -------------------------- | -------------------------------- |
-| `GET`    | `/`                        | Check backend status             |
-| `POST`   | `/upload-contract`         | Upload and process a contract    |
-| `POST`   | `/ask-contract`            | Ask a question about a contract  |
-| `GET`    | `/contracts`               | Return stored contract history   |
-| `GET`    | `/contracts/{contract_id}` | Return one stored contract       |
-| `DELETE` | `/contracts/{contract_id}` | Delete a stored contract         |
-
-
----
-
-## Recommended Screenshots
-
-Add the following screenshots to the final documentation or README:
-
-1. Application landing page
-2. Contract upload interface
-3. Uploaded contract information
-4. Contract summary
-5. Risk overview
-6. Clause analysis results
-7. High-risk clause display
-8. Clause-type classification
-9. Contract question-and-answer feature
-10. Contract history page
-11. Search functionality
-12. Scanned PDF or OCR result
-13. FastAPI Swagger documentation
-14. Backend terminal while running
-15. Frontend terminal while running
-16. Model evaluation output
-17. Confusion matrix
-18. External prediction results
-
-Create an `images` or `screenshots` folder and add images using Markdown:
-
-```markdown
-![Contract Upload Screen](screenshots/contract-upload.png)
-```
-
----
+Comparison and export endpoints follow the active router implementation used by the frontend.
 
 ## Testing
 
-Before final submission, run the following technical checks:
+Recommended checks:
 
 ```cmd
 python -m mypy main.py evaluate_external_test.py validate_hybrid_clause_model.py evaluation_strengthening
 python -m py_compile main.py validate_hybrid_clause_model.py
 python evaluation_strengthening\generate_detailed_evaluation.py
 python evaluation_strengthening\run_phase5_ablation.py
-python -m uvicorn main:app
+uvicorn main:app --reload
 ```
 
-Then test the system using:
+Also verify:
 
-* A searchable PDF
-* A scanned PDF
-* A short contract
-* A long contract
-* A contract containing high-risk clauses
-* A document with missing information
-* An unsupported or invalid file
-* A contract-related question
-* A non-contract-related question
-* Contract history loading
-* Database persistence after restarting the backend
+- Searchable, scanned, and mixed PDFs
+- Invalid, oversized, and excessive-page uploads
+- Low-confidence manual-review badges
+- Structured Q&A and open-ended RAG Q&A
+- RAG source snippets and match scores
+- Clause explanation
+- Contract comparison
+- PDF and DOCX export
+- Contract persistence and deletion
+- Frozen external model evaluation
 
----
+## Security and Legal Limitations
 
-## Security Considerations
+- API keys must remain in environment variables and `.env` must not be committed.
+- Uploaded documents must be validated before extraction or OCR.
+- The prototype does not include production authentication, encryption, multi-tenancy, or secure cloud storage.
+- The classifier achieves 53.33% external accuracy and can make errors.
+- OCR quality depends on scan quality and layout.
+- RAG reduces unsupported Gemini answers but generated explanations still require review.
+- The system provides legal information and decision support, not professional legal advice.
 
-* API keys must be stored in environment variables.
-* The `.env` file must not be committed to Git.
-* Uploaded files should be validated.
-* File size restrictions should be enforced.
-* Unsupported file formats should be rejected.
-* User input should be validated before processing.
-* Generated legal responses should clearly display a disclaimer.
+## Future Work
 
----
-
-## Limitations
-
-* The system does not replace a qualified lawyer.
-* Predictions depend on the quality and coverage of the training dataset.
-* OCR accuracy may decrease for blurry or low-resolution documents.
-* Some uncommon clauses may be classified incorrectly.
-* Gemini responses may occasionally contain incomplete or inaccurate information.
-* The system may not support every legal jurisdiction.
-* The external evaluation dataset may contain categories with limited examples.
-* Low-frequency clause categories may have lower classification performance.
-
----
-
-## Future Improvements
-
-Possible future improvements include:
-
-* Add user authentication
-* Add role-based access
-* Add cloud database support
-* Deploy the frontend and backend
-* Support DOCX and TXT contracts
-* Add multilingual contract analysis
-* Improve OCR preprocessing
-* Train transformer-based legal language models
-* Expand the legal clause dataset
-* Add jurisdiction-specific legal rules
-* Add contract comparison
-* Add clause recommendation features
-* Export analysis as PDF
-* Add admin analytics
-* Add subscription and payment functionality
-* Add secure cloud document storage
-
----
-
-## Legal Disclaimer
-
-The Legal Contract Analyzer is an educational and assistive software project.
-
-It does not provide professional legal advice and should not be treated as a substitute for consultation with a licensed lawyer. Model predictions and AI-generated explanations may contain errors or may not apply to every legal jurisdiction.
-
-Users should consult a qualified legal professional before making decisions based on a contract or the results produced by this system.
-
----
+- Manually audit the 188 provisional Phase-5 labels
+- Expand manually reviewed lease data across jurisdictions and drafting styles
+- Run full multi-epoch GPU transformer experiments and evaluate legal-domain pretrained models
+- Calibrate confidence and abstention thresholds on larger external datasets
+- Add a human correction and active-learning interface
+- Add authentication, role-based permissions, encryption, and retention controls
+- Deploy securely to cloud infrastructure
+- Add automated unit, integration, regression, performance, and security testing
+- Support DOCX input, multilingual contracts, and additional legal document types
 
 ## Author
 
-**Project:** Legal Contract Analyzer
-**Developer:** Kainat Arshad
-**Institution:** Career Institute
+**Project:** Legal Contract Analyzer  
+**Developer:** Kainat Arshad  
+**Institution:** Career Institute  
 **Program:** BSAI
-**Submission Date:** July 14, 2026
+**Submission Date:** July 20, 2026
 
----
+## Legal Disclaimer
 
-## License
-
-This project was developed for educational and academic purposes.
-
-Add a formal open-source license only when required by your institution or when publishing the project publicly.
+The Legal Contract Analyzer is an educational and assistive software project. It does not provide professional legal advice and should not be treated as a substitute for consultation with a licensed lawyer. Model predictions and AI-generated explanations may contain errors or may not apply to every legal jurisdiction.

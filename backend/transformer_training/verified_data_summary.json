@@ -1,0 +1,36 @@
+{
+  "training_rows": 6486,
+  "evaluation_rows": 330,
+  "training_columns": [
+    "clause_text",
+    "clause_type",
+    "source",
+    "contract_type",
+    "source_split",
+    "dataset_origin"
+  ],
+  "evaluation_columns": [
+    "clause_text",
+    "clause_type",
+    "corrected_clause_type",
+    "source",
+    "character_count",
+    "word_count",
+    "needs_review",
+    "review_status",
+    "include_in_evaluation",
+    "review_decision",
+    "final_clause_type",
+    "review_notes"
+  ],
+  "training_label_count": 22,
+  "evaluation_label_count": 21,
+  "training_splits": {
+    "train": 5041,
+    "validation": 749,
+    "test": 696
+  },
+  "training_duplicates": 0,
+  "evaluation_duplicates": 0,
+  "normalized_text_overlap": 0
+}
